@@ -4,7 +4,6 @@ import json
 
 # Define the Port API endpoint URLs
 frameworkAPI = "https://api.getport.io/v1/blueprints/service/entities/Mamat_HW?create_missing_related_entities=false"
-blueprintsAPI = "https://api.getport.io/v1/blueprints"
 entitiesAPI = "https://api.getport.io/v1/blueprints/service/entities"
 Token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdJZCI6Im9yZ19RcGUxak90cGZBZ0RFZzBKIiwiaXNzIjoiaHR0cHM6Ly9hcGkuZ2V0cG9ydC5pbyIsImlzTWFjaGluZSI6dHJ1ZSwic3ViIjoiVmNMVHNkNzE3R0piNXprZGpRUFg4YzlJSEZxSTVHS3UiLCJqdGkiOiIyMWY4NmZiMi01OWU1LTQyNGYtODhiYi0wMzdjYmVkMDA0NzQiLCJpYXQiOjE3MTIzMDg4NjEsImV4cCI6MTcxMjMxOTY2MX0.mWIC3t_i78SIiEk5GNC8LmEHu1V7U44qyr3I5SkVHaw"
 
