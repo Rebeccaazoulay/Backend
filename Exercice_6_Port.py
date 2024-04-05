@@ -1,6 +1,4 @@
 import requests
-import json
-
 
 # Define the Port API endpoint URLs
 frameworkAPI = "https://api.getport.io/v1/blueprints/service/entities/Mamat_HW?create_missing_related_entities=false"
