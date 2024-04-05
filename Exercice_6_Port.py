@@ -1,41 +1,37 @@
 import requests
 
 # Define the Port API endpoint URLs
-frameworkAPI = "https://api.getport.io/v1/blueprints/service/entities/Mamat_HW?create_missing_related_entities=false"
 entitiesAPI = "https://api.getport.io/v1/blueprints/service/entities"
-Token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdJZCI6Im9yZ19RcGUxak90cGZBZ0RFZzBKIiwiaXNzIjoiaHR0cHM6Ly9hcGkuZ2V0cG9ydC5pbyIsImlzTWFjaGluZSI6dHJ1ZSwic3ViIjoiVmNMVHNkNzE3R0piNXprZGpRUFg4YzlJSEZxSTVHS3UiLCJqdGkiOiIyMWY4NmZiMi01OWU1LTQyNGYtODhiYi0wMzdjYmVkMDA0NzQiLCJpYXQiOjE3MTIzMDg4NjEsImV4cCI6MTcxMjMxOTY2MX0.mWIC3t_i78SIiEk5GNC8LmEHu1V7U44qyr3I5SkVHaw"
+Token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdJZCI6Im9yZ19RcGUxak90cGZBZ0RFZzBKIiwiaXNzIjoiaHR0cHM6Ly9hcGkuZ2V0cG9ydC5pbyIsImlzTWFjaGluZSI6dHJ1ZSwic3ViIjoiVmNMVHNkNzE3R0piNXprZGpRUFg4YzlJSEZxSTVHS3UiLCJqdGkiOiI2YWZmMmY0NS1iNWQ4LTRjNGYtYjhkOS03NWIwMTY0ZDMzNzAiLCJpYXQiOjE3MTIzMTg5NDAsImV4cCI6MTcxMjMyOTc0MH0.oy2XhdeOmlbYc0tjZbeX69ASb3l07fgGkwl9bR6VEas"
 
+def fetch_entities():
+    response = requests.get(entitiesAPI, headers={"Authorization": Token}).json()
+    return response.get('entities', [])
 
-#---------------------- just count the EOL
-
-counter = 0
-entitiesAPI = "https://api.getport.io/v1/blueprints/service/entities"
-response = requests.get(entitiesAPI, headers={"Authorization": Token}).json()
-
-print(response)
-
-for entity in response['entities']:
-    try:
-        if entity['properties']['state'] == 'EOL':
+def count_eol_packages(entities):
+    counter = 0
+    for entity in entities:
+        if entity.get('properties', {}).get('state') == 'EOL':
             counter += 1
-    except:
-        continue
+    return counter
 
-#---------------------- just count the EOL
+def update_entities(entities, counter):
+    for entity in entities:
+        entity['properties']['number_of_eol_packages'] = counter
+        entity['icon'] = ''
+        entity['properties']['readme'] = ''
+        del entity['blueprint'], entity['createdAt'], entity['createdBy'], entity['updatedAt'], entity['updatedBy'], entity['scorecards'], entity['scorecardsStats']
+        entity['properties']['closedAt'] = '2024-04-02T07:16:03.487Z'
+        entity['properties']['mergedAt'] = '2024-04-02T07:15:30.487Z'
+        frameworkAPI = f"https://api.getport.io/v1/blueprints/service/entities/{entity['identifier']}?create_missing_related_entities=false"
+        requests.patch(url=frameworkAPI, json=entity, headers={"Authorization": Token}).json()
+    return
 
-print(counter)
+def main():
+    entities = fetch_entities()
+    eol_counter = count_eol_packages(entities)
+    update_entities(entities, eol_counter)
 
-response = requests.get(entitiesAPI, headers={"Authorization": Token}).json()
-for entity in response['entities']:
-    entity['properties']['number_of_eol_packages'] = counter
-    entity['icon'] = ''
-    entity['properties']['readme'] = ''
-    del(entity['blueprint'], entity['createdAt'], entity['createdBy'], entity['updatedAt'], entity['updatedBy'], entity['scorecards'], entity['scorecardsStats'])
-    entity['properties']['closedAt'] = '2024-04-02T07:16:03.487Z'
-    entity['properties']['mergedAt'] = '2024-04-02T07:15:30.487Z'
-    frameworkAPI = "https://api.getport.io/v1/blueprints/service/entities/" + entity['identifier'] + "?create_missing_related_entities=false"
-    post_response = requests.patch(url=frameworkAPI, json=entity, headers={"Authorization": Token}).json()
-
-
-print(post_response)
+if __name__ == "__main__":
+    main()
 
